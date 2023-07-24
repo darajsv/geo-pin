@@ -17,7 +17,6 @@ export default {
   },
   methods: {
     handlePostSuccess(id) {
-      // Redirect to the GoogleMaps view
       this.$router.push({ path: '/maps', query: { id } });
     },
   },

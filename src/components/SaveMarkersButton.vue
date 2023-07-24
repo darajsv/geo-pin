@@ -28,16 +28,12 @@ export default {
         );
 
         if (response.status === 200) {
-          console.log(response);
           console.log('Markers saved successfully!');
-          // Optionally, you can show a success message or perform other actions here
         } else {
           console.error('Failed to save markers.');
-          // Optionally, you can show an error message or perform other actions here
         }
       } catch (error) {
         console.error('Error saving markers:', error);
-        // Optionally, you can show an error message or perform other actions here
       }
     },
   },

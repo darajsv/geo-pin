@@ -93,7 +93,7 @@ export default {
   methods: {
     async calculateRoute() {
       if (this.markers.length < 2) {
-        return; // Not enough markers to calculate a route
+        return;
       }
 
       this.sortedMarkers = [...this.markers];
@@ -163,13 +163,10 @@ export default {
             this.destination,
           ];
 
-          // Now we create the points array by comparing the bestRoute and sortedMarkers order
           let points = bestRoute.map((marker) => {
-            // Get the indices in both arrays
             const sortedIndex = this.sortedMarkers.indexOf(marker);
             const bestRouteIndex = bestRoute.indexOf(marker);
 
-            // Calculate the points (the lower the index, the more the points)
             return {
               marker,
               points:
@@ -180,7 +177,6 @@ export default {
           });
           points.sort((a, b) => b.points - a.points);
 
-          // Now we have the points array sorted by points, you can map it back to an array of markers if needed
           this.markers = points.map((point) => point.marker);
         }
       }
@@ -192,7 +188,7 @@ export default {
         if (this.markers.length >= 2) {
           await this.calculateRoute();
         } else {
-          this.routeData = null; // clear the route if there are less than 2 markers
+          this.routeData = null;
         }
       }
     },
@@ -204,7 +200,7 @@ export default {
       this.address = place.formatted_address;
       this.phoneNumber = place.formatted_phone_number;
       this.placeId = place.place_id;
-      this.openingHours = place.opening_hours.periods;
+      this.openingHours = place.opening_hours?.periods || [];
     },
     async addMarker() {
       this.markers.push({
@@ -225,8 +221,6 @@ export default {
     },
     getPolylinePath() {
       if (this.routeData && this.routeData.routes && this.routeData.routes[0]) {
-        // Extract latitude and longitude values from the route data
-
         return this.routeData.routes[0].overview_polyline;
       }
       return [];
@@ -235,7 +229,6 @@ export default {
       let furthestPair = [];
       let maxDistance = 0;
 
-      // Calculate the distance between every pair of markers
       for (let i = 0; i < this.markers.length; i++) {
         for (let j = i + 1; j < this.markers.length; j++) {
           const distance = this.getDistance(
@@ -243,8 +236,6 @@ export default {
             this.markers[j].position
           );
 
-          // If the distance between this pair of markers is greater than the maxDistance
-          // update maxDistance and furthestPair
           if (distance > maxDistance) {
             maxDistance = distance;
             furthestPair = [this.markers[i], this.markers[j]];
@@ -259,7 +250,7 @@ export default {
         return (x * Math.PI) / 180;
       };
 
-      const R = 6378137; // Earth’s mean radius in meters
+      const R = 6378137;
       const dLat = rad(position2.lat - position1.lat);
       const dLong = rad(position2.lng - position1.lng);
 
@@ -273,7 +264,7 @@ export default {
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       const distance = R * c;
 
-      return distance; // returns the distance in meters
+      return distance;
     },
   },
   computed: {
@@ -305,7 +296,7 @@ export default {
       this.markers = await Promise.all(
         this.planData.map(async (dataItem) => {
           const response = await fetch(
-            `${process.env.VUE_APP_BACKEND_BASE_URL}/detail-location/${dataItem.placeId}`
+            `${process.env.VUE_APP_BACKEND_BASE_URL}/location/${dataItem.placeId}`
           );
           const place = await response.json();
           return {
@@ -315,13 +306,13 @@ export default {
             },
             address: place.result.formatted_address,
             phoneNumber: place.result.formatted_phone_number,
-            openingHours: place.result.opening_hours?.periods || [], // handle case where opening hours might not be available
+            openingHours: place.result.opening_hours?.periods || [],
             placeId: place.result.place_id,
             customName: dataItem.customName,
           };
         })
       );
-      console.log(this.markers[0].openingHours);
+
       await this.calculateRoute();
     }
   },

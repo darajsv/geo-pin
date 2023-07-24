@@ -3,9 +3,9 @@
 how to use:
 
 click button send post request to get started
-add locations to the map and add a custom name to it
+add locations to the map and add a custom name to each location
 adding locations will calculate best route, and generate a list of recomended visit order
-if you want to consider the opening hours of the place check the box and select what day you want to make the visit, click recalculate, and it will generate a new recomendation based on best route and opening hours
+if you want to consider the opening hours of the place check the box and select what day you want to make the visit, click recalculate, and it will generate a new recomendation based on best route and opening hours, you may save the generated code to access later your travel plan
 
 ## Project setup
 
